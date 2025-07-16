@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  parkmanager-api:
+    build:
+      context: .
+      dockerfile: ParkManager.API/Dockerfile
+    ports:
+      - "5154:80"
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=ParkManagerDb;Username=postgres;Password=postgres;Port=5432
+    networks:
+      - parkmanager-network
+
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ParkManagerDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - parkmanager-network
+
+volumes:
+  postgres_data:
+
+networks:
+  parkmanager-network:
+    driver: bridge

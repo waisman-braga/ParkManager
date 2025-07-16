@@ -1,4 +1,113 @@
-@ParkManager.API_HostAddress = http://localhost:5154
+### Test ParkManager API
+
+# Teste de Cliente
+
+### Criar Cliente
+POST http://localhost:5154/api/cliente
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "telefone": "(11) 99999-9999"
+}
+
+### Listar Clientes
+GET http://localhost:5154/api/cliente
+
+### Obter Cliente por ID
+GET http://localhost:5154/api/cliente/{{clienteId}}
+
+### Atualizar Cliente
+PUT http://localhost:5154/api/cliente/{{clienteId}}
+Content-Type: application/json
+
+{
+  "nome": "João Santos",
+  "telefone": "(11) 88888-8888"
+}
+
+### Deletar Cliente
+DELETE http://localhost:5154/api/cliente/{{clienteId}}
+
+# Teste de Veiculo
+
+### Criar Veiculo
+POST http://localhost:5154/api/veiculo
+Content-Type: application/json
+
+{
+  "placa": "ABC1234",
+  "modelo": "Civic",
+  "clienteId": "{{clienteId}}"
+}
+
+### Listar Veiculos
+GET http://localhost:5154/api/veiculo
+
+### Obter Veiculo por ID
+GET http://localhost:5154/api/veiculo/{{veiculoId}}
+
+### Obter Veiculo por Placa
+GET http://localhost:5154/api/veiculo/placa/ABC1234
+
+### Obter Veiculos por Cliente
+GET http://localhost:5154/api/veiculo/cliente/{{clienteId}}
+
+### Atualizar Veiculo
+PUT http://localhost:5154/api/veiculo/{{veiculoId}}
+Content-Type: application/json
+
+{
+  "placa": "ABC5678",
+  "modelo": "Corolla",
+  "clienteId": "{{clienteId}}"
+}
+
+### Deletar Veiculo
+DELETE http://localhost:5154/api/veiculo/{{veiculoId}}
+
+# Teste de Mensalista
+
+### Criar Mensalista
+POST http://localhost:5154/api/mensalista
+Content-Type: application/json
+
+{
+  "clienteId": "{{clienteId}}",
+  "veiculoId": "{{veiculoId}}",
+  "dataInicio": "2024-01-01",
+  "dataVencimento": "2024-02-01",
+  "valor": 150.00,
+  "ativo": true
+}
+
+### Listar Mensalistas
+GET http://localhost:5154/api/mensalista
+
+### Listar Mensalistas Ativos
+GET http://localhost:5154/api/mensalista/ativos
+
+### Obter Mensalista por ID
+GET http://localhost:5154/api/mensalista/{{mensalistaId}}
+
+### Obter Mensalista por Cliente
+GET http://localhost:5154/api/mensalista/cliente/{{clienteId}}
+
+### Atualizar Mensalista
+PUT http://localhost:5154/api/mensalista/{{mensalistaId}}
+Content-Type: application/json
+
+{
+  "clienteId": "{{clienteId}}",
+  "veiculoId": "{{veiculoId}}",
+  "dataInicio": "2024-01-01",
+  "dataVencimento": "2024-03-01",
+  "valor": 180.00,
+  "ativo": true
+}
+
+### Deletar Mensalista
+DELETE http://localhost:5154/api/mensalista/{{mensalistaId}}anager.API_HostAddress = http://localhost:5154
 
 GET {{ParkManager.API_HostAddress}}/weatherforecast/
 Accept: application/json

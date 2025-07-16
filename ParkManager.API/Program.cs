@@ -1,3 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using ParkManager.Domain.Interfaces;
+using ParkManager.Infrastructure.Data;
+using ParkManager.Infrastructure.Repositories;
+using ParkManager.API.Mapping;
+using ParkManager.API.Middleware;
+using ParkManager.API.Services;
 
 namespace ParkManager.API
 {
@@ -8,8 +15,33 @@ namespace ParkManager.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
+
+            // CORS Configuration
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
+            // Entity Framework Configuration
+            builder.Services.AddDbContext<ParkManagerContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // AutoMapper Configuration
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            // Dependency Injection
+            builder.Services.AddScoped<ICliente, ClienteRepository>();
+            builder.Services.AddScoped<IVeiculo, VeiculoRepository>();
+            builder.Services.AddScoped<IMensalista, MensalistaRepository>();
+            builder.Services.AddScoped<IFaturamentoBasico, FaturamentoBasicoRepository>();
+            builder.Services.AddScoped<ValidationService>();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -17,6 +49,8 @@ namespace ParkManager.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -25,8 +59,9 @@ namespace ParkManager.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors("AllowAll");
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
