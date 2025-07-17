@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ParkManager.API/Dockerfile
     ports:
-      - "5154:80"
+      - "5154:8080"
     depends_on:
       - postgres
     environment:

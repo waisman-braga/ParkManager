@@ -39,7 +39,7 @@ namespace ParkManager.API
             builder.Services.AddScoped<ICliente, ClienteRepository>();
             builder.Services.AddScoped<IVeiculo, VeiculoRepository>();
             builder.Services.AddScoped<IMensalista, MensalistaRepository>();
-            builder.Services.AddScoped<IFaturamentoBasico, FaturamentoBasicoRepository>();
+            //builder.Services.AddScoped<IFaturamentoBasico, FaturamentoBasicoRepository>();
             builder.Services.AddScoped<ValidationService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,6 +47,21 @@ namespace ParkManager.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            // Ensure database is created and migrations are applied
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ParkManagerContext>();
+                try
+                {
+                    dbContext.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while migrating the database.");
+                }
+            }
 
             // Configure the HTTP request pipeline.
             app.UseMiddleware<ExceptionMiddleware>();
